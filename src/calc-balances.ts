@@ -52,8 +52,6 @@ async function main() {
     (tokenHash) => tokenHash === GAS_SCRIPT_HASH
   );
 
-  // SUM GAS
-
   let gasBalance = 0;
 
   for (const tokenHash of nativeAssets) {
@@ -77,7 +75,6 @@ async function main() {
     gasBalance += GASBalance.balance;
   }
 
-  // DECREASING GAS
   const transactionsWhereImSender = rows.filter(
     (row) => row.sender === base64ToNeo3Address(ADDRESS_BASE_64)
   );
