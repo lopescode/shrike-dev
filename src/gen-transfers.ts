@@ -3,7 +3,7 @@ import { ADDRESS_BASE_64 } from "./constants";
 import { dbConnection } from "./database/dbConnection";
 
 async function main() {
-  const transferQuery = `SELECT sysfee, netfee, notifications
+  const transferQuery = `SELECT hash, sender, sysfee, netfee, notifications
     FROM transactions
     WHERE notifications LIKE '%"eventname":"Transfer"%'
     AND notifications LIKE '%${ADDRESS_BASE_64}%';`;

@@ -35,12 +35,14 @@ async function main() {
             : "Burn";
 
         balances.push({
+          scriptHash: row.hash,
           from,
           to,
           tokenHash: notification.contract,
           amount: amount ?? "0",
           type: from === "Mint" ? "Mint" : to === "Burn" ? "Burn" : "Transfer",
           fee: Number(row.netfee) + Number(row.sysfee),
+          sender: row.sender,
         });
       }
     } catch (error) {

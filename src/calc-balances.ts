@@ -48,6 +48,75 @@ async function main() {
     balanceResult.push(balance);
   }
 
+  const nativeAssets = Object.keys(groupedRows).filter(
+    (tokenHash) => tokenHash === GAS_SCRIPT_HASH
+  );
+
+  // SUM GAS
+
+  let gasBalance = 0;
+
+  for (const tokenHash of nativeAssets) {
+    const tokenRows = groupedRows[tokenHash];
+
+    const GASBalance = tokenRows.reduce(
+      (acc, row) => {
+        if (row.from === base64ToNeo3Address(ADDRESS_BASE_64)) {
+          acc.balance -= Number(row.amount);
+        }
+
+        if (row.to === base64ToNeo3Address(ADDRESS_BASE_64)) {
+          acc.balance += Number(row.amount);
+        }
+
+        return acc;
+      },
+      { tokenHash, balance: 0 }
+    );
+
+    gasBalance += GASBalance.balance;
+  }
+
+  // DECREASING GAS
+  const transactionsWhereImSender = rows.filter(
+    (row) => row.sender === base64ToNeo3Address(ADDRESS_BASE_64)
+  );
+
+  const groupedTransactionsByScriptHash = transactionsWhereImSender.reduce(
+    (acc, row) => {
+      if (!acc[row.scriptHash]) {
+        acc[row.scriptHash] = [];
+      }
+
+      acc[row.scriptHash].push(row);
+
+      return acc;
+    },
+    {} as Record<string, TBalance[]>
+  );
+
+  console.log(groupedTransactionsByScriptHash);
+
+  const transactionsFromScriptHash = Object.keys(
+    groupedTransactionsByScriptHash
+  ).map((scriptHash) => groupedTransactionsByScriptHash[scriptHash]);
+
+  let fee = 0;
+
+  transactionsFromScriptHash.forEach((transaction) => {
+    fee += transaction[0].fee;
+  });
+
+  console.log({
+    gasBalance,
+    fee,
+  });
+
+  balanceResult.push({
+    tokenHash: GAS_SCRIPT_HASH,
+    balance: gasBalance - fee,
+  });
+
   await fsPromises.writeFile(
     `./src/output/balance-result-${ADDRESS_BASE_64}.json`,
     JSON.stringify(balanceResult, null, 2)
