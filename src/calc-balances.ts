@@ -95,8 +95,6 @@ async function main() {
     {} as Record<string, TBalance[]>
   );
 
-  console.log(groupedTransactionsByScriptHash);
-
   const transactionsFromScriptHash = Object.keys(
     groupedTransactionsByScriptHash
   ).map((scriptHash) => groupedTransactionsByScriptHash[scriptHash]);
@@ -105,11 +103,6 @@ async function main() {
 
   transactionsFromScriptHash.forEach((transaction) => {
     fee += transaction[0].fee;
-  });
-
-  console.log({
-    gasBalance,
-    fee,
   });
 
   balanceResult.push({
