@@ -2,12 +2,11 @@ import * as fsPromises from "node:fs/promises";
 import { TBalance } from "./types/TBalance";
 import { TBalanceResult } from "./types/TBalanceResult";
 import { base64ToNeo3Address } from "./helper/CryptoHelper";
+import { ADDRESS_BASE_64, GAS_SCRIPT_HASH } from "./constants";
 
 async function main() {
-  const addressBase64 = "qlnOoRBvT9RecNKDqaIV0QvZRG8=";
-
   const file = await fsPromises.readFile(
-    `./src/output/balances-${addressBase64}.json`
+    `./src/output/balances-${ADDRESS_BASE_64}.json`
   );
 
   const balanceResult: TBalanceResult[] = [];
@@ -24,16 +23,20 @@ async function main() {
     return acc;
   }, {} as Record<string, TBalance[]>);
 
-  for (const tokenHash of Object.keys(groupedRows)) {
+  const nonNativeAssets = Object.keys(groupedRows).filter(
+    (tokenHash) => tokenHash !== GAS_SCRIPT_HASH
+  );
+
+  for (const tokenHash of nonNativeAssets) {
     const tokenRows = groupedRows[tokenHash];
 
     const balance = tokenRows.reduce(
       (acc, row) => {
-        if (row.from === base64ToNeo3Address(addressBase64)) {
+        if (row.from === base64ToNeo3Address(ADDRESS_BASE_64)) {
           acc.balance -= Number(row.amount);
         }
 
-        if (row.to === base64ToNeo3Address(addressBase64)) {
+        if (row.to === base64ToNeo3Address(ADDRESS_BASE_64)) {
           acc.balance += Number(row.amount);
         }
 
@@ -46,7 +49,7 @@ async function main() {
   }
 
   await fsPromises.writeFile(
-    `./src/output/balance-result-${addressBase64}.json`,
+    `./src/output/balance-result-${ADDRESS_BASE_64}.json`,
     JSON.stringify(balanceResult, null, 2)
   );
 

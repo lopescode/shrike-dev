@@ -4,4 +4,5 @@ export type TBalance = {
   tokenHash: string;
   amount: string;
   type: string;
+  fee: number;
 };

@@ -40,6 +40,7 @@ async function main() {
           tokenHash: notification.contract,
           amount: amount ?? "0",
           type: from === "Mint" ? "Mint" : to === "Burn" ? "Burn" : "Transfer",
+          fee: Number(row.netfee) + Number(row.sysfee),
         });
       }
     } catch (error) {
