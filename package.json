@@ -8,7 +8,8 @@
     "gen-transfers": "ts-node-dev --respawn --transpile-only src/gen-transfers.ts",
     "gen-balances": "ts-node-dev --respawn --transpile-only src/gen-balances.ts",
     "calc-balances": "ts-node-dev --respawn --transpile-only src/calc-balances.ts",
-    "calc-total-gas-claimed": "ts-node-dev --respawn --transpile-only src/calc-total-gas-claimed.ts"
+    "calc-total-gas-claimed": "ts-node-dev --respawn --transpile-only src/calc-total-gas-claimed.ts",
+    "calc-total-gas-burned": "ts-node-dev --respawn --transpile-only src/calc-total-gas-burned.ts"
   },
   "keywords": [],
   "author": "",
